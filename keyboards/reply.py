@@ -39,3 +39,22 @@ def sub_contacts():
         ],
         resize_keyboard=True
     )
+
+
+def admin_main():
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="Додати адміністратора"),
+             KeyboardButton(text="Видалити адміністратора")],
+            [KeyboardButton(text='Розсилка')]
+        ],
+        resize_keyboard=True
+    )
+
+def admin_main_sending():
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="Скасувати")]
+        ],
+        resize_keyboard=True
+    )

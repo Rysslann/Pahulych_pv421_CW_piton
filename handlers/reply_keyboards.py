@@ -6,6 +6,7 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from keyboards import inline, reply
 from creds import main
 from states import forms
+from auth import main as auth
 
 dp = main.dp
 
@@ -66,3 +67,17 @@ async def special_msg(message: types.Message, state: FSMContext) -> None:
             "Test Title",
             "test address"
         )
+    # --- admins ---
+    if content == "Додати адміністратора":
+        if auth.is_admin(cid):
+            await message.answer("Введіть id адміністратора")
+            await state.set_state(forms.AddNewAdmin.wait_for_admin_ad)
+        else:
+            await message.answer("У вас нема доступу до цієї функції, зверніться до адміністратора", reply_markup=reply.main_menu())
+
+    if content == "Розсилка":
+        if auth.is_admin(cid):
+            await message.answer("Введіть nтекст розсилки:", reply_markup=reply.admin_main_sending())
+            await state.set_state(forms.MassSending.wait_rom_content_msg)
+        else:
+            await message.answer("У вас нема доступу до цієї функції, зверніться до адміністратора", reply_markup=reply.main_menu())

@@ -5,6 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from creds import main
 from keyboards import reply
+from auth import main as auth
+from utils import mass_sending as send
 
 dp = main.dp
 
@@ -17,6 +19,32 @@ class RequestForm(StatesGroup):
     wait_for_name = State()
     wait_for_email = State()
     wait_for_comment = State()
+
+
+class AddNewAdmin(StatesGroup):
+    wait_for_admin_ad = State()
+
+
+class MassSending(StatesGroup):
+    wait_rom_content_msg = State()
+
+
+@dp.message(MassSending.wait_rom_content_msg)
+async def get_new_admin_id(msg: types.Message, state: FSMContext):
+    if msg.text == "Скасувати":
+        await state.clear()
+        await msg.answer("Розсилку скасовано", reply_markup=reply.admin_main())
+    else:
+        await send.global_mass_sending(msg.text, msg.from_user.id)
+        await state.clear()
+
+
+@dp.message(AddNewAdmin.wait_for_admin_ad)
+async def get_new_admin_id(msg: types.Message, state: FSMContext):
+    print("Admin ID", int(msg.text))
+    auth.add_new_admin(int(msg.text))
+    await state.clear()
+    await msg.answer("Адміна успішно додано", reply_markup=reply.admin_main())
 
 
 @dp.message(RegistrationStates.wait_for_feedback)
